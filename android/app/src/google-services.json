@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "396719171989",
+    "project_id": "defense-b18ba",
+    "storage_bucket": "defense-b18ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396719171989:android:efcbacbb0d33500f8dee9c",
+        "android_client_info": {
+          "package_name": "com.example.defense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnjPbdR_2QE6nScM0hYDF9hP4VbkCEuuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
