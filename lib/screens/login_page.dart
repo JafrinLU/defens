@@ -57,8 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       final role = data['role'] ?? '';
       final status = data['status'] ?? '';
       final name = data['name'] ?? 'User';
-      final skills = data['skills'] ?? '';
-      final category = skills.isNotEmpty ? skills[0] :'';
+      final category = data['category'] ?? '';
 
       // 🔹 Step 4: Navigate based on role
       if (role == 'admin') {

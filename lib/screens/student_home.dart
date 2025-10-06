@@ -3,7 +3,7 @@ import 'profile_page.dart';
 import 'notification_page.dart';
 import 'settings_page.dart';
 import 'login_page.dart';
-import 'prefect_home_page.dart'; // added for navigation
+import 'prefect_category_page.dart';
 
 class StudentHomePage extends StatefulWidget {
   final String userName;
@@ -42,8 +42,8 @@ class _StudentHomePageState extends State<StudentHomePage> {
       {"name": "UI/UX Design", "image": "lib/assets/UiUx.png"},
       {"name": "AI/ML", "image": "lib/assets/aiMl.png"},
       {"name": "Web Development", "image": "lib/assets/webDevelopment.png"},
-      {"name": "App Development", "image": "lib/assets/webDevelopment.png"},
-      {"name": "Cyber Security", "image": "lib/assets/aiMl.png"},
+      {"name": "App Development", "image": "lib/assets/app_development.png"},
+      {"name": "Cyber Security", "image": "lib/assets/cyberSecurity.png"},
       {"name": "Data Science", "image": "lib/assets/aiMl.png"},
       {"name": "Networking", "image": "lib/assets/CP.png"},
     ];
@@ -51,7 +51,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
     return Scaffold(
       body: Column(
         children: [
-          // Pink welcome section
+
           Container(
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
@@ -93,7 +93,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
 
           const SizedBox(height: 15),
 
-          // Grid View of categories
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -114,7 +114,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () {
-                        // ✅ Navigate to Category Page when tapped
+                        // ✅ Navigate to PrefectCategoryPage
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -127,7 +127,6 @@ class _StudentHomePageState extends State<StudentHomePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Category image
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -138,7 +137,6 @@ class _StudentHomePageState extends State<StudentHomePage> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          // Category name
                           Padding(
                             padding:
                             const EdgeInsets.symmetric(horizontal: 8.0),
@@ -161,7 +159,6 @@ class _StudentHomePageState extends State<StudentHomePage> {
         ],
       ),
 
-      // Bottom navigation bar
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.pink,

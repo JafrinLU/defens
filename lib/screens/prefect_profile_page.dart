@@ -8,64 +8,52 @@ class PrefectProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final docRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text("My Profile"),
         backgroundColor: Colors.pink,
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future:
-        FirebaseFirestore.instance.collection('users').doc(userId).get(),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: docRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final data = snapshot.data!.data() as Map<String, dynamic>?;
-          if (data == null) {
-            return const Center(child: Text("No profile data"));
-          }
+
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+
           return Center(
             child: Card(
+              elevation: 4,
               margin: const EdgeInsets.all(20),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
-              elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: data['profileImageUrl'] != null
-                        ? NetworkImage(data['profileImageUrl'])
-                        : null,
-                    child: data['profileImageUrl'] == null
-                        ? const Icon(Icons.person, size: 50)
-                        : null,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(data['name'] ?? '',
-                      style:
-                      const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Expertise: ${data['skills'] != null && data['skills'].isNotEmpty ? data['skills'][0] : 'N/A'}",
-                  ),
-                  const SizedBox(height: 8),
-                  Text("Batch: ${data['batch'] ?? 'N/A'}"),
-                  const SizedBox(height: 8),
-                  Text("Department: ${data['department'] ?? 'N/A'}"),
-                  const SizedBox(height: 8),
-                  Text("Phone: ${data['phone'] ?? 'N/A'}"),
-                  const SizedBox(height: 8),
-
-                  Text(
-                    "Status: ${data['status'] ?? 'pending'}",
-                    style: TextStyle(
-                      color: data['status'] == 'approved' ? Colors.green
-                          : Colors.orange,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 45,
+                      backgroundColor: Colors.pink.shade50,
+                      child: const Icon(Icons.person,
+                          size: 50, color: Colors.pink),
                     ),
-                  ),
-                ]),
+                    const SizedBox(height: 10),
+                    Text(data['name'] ?? '',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    Text("Email: ${data['email']}"),
+                    Text("Phone: ${data['phone']}"),
+                    Text("Batch: ${data['batch']}"),
+                    Text("Department: ${data['department']}"),
+                  ],
+                ),
               ),
             ),
           );
