@@ -6,13 +6,13 @@ import 'prefect_category_page.dart';
 
 class PrefectHomePage extends StatefulWidget {
   final String userName;
-  final String userId;
+  final String prefectId;
   final String category;
 
   const PrefectHomePage({
     super.key,
     required this.userName,
-    required this.userId,
+    required this.prefectId,
     required this.category,
   });
 
@@ -142,8 +142,8 @@ class _PrefectHomePageState extends State<PrefectHomePage> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       _buildHomeView(),
-      CreateBlogPage(userId: widget.userId),
-      PrefectProfilePage(userId: widget.userId),
+      CreateBlogPage(prefectId: widget.prefectId),
+      PrefectProfilePage(userId: widget.prefectId),
     ];
 
     return Scaffold(

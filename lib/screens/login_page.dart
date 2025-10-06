@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(
               builder: (_) => PrefectHomePage(
-                userId: user.uid,
+                prefectId: user.uid,
                 userName: name,
                 category: category,
               ),

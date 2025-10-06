@@ -1,7 +1,7 @@
-// updated prefect_detail_page.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'blog_model.dart';
 
 class PrefectDetailPage extends StatelessWidget {
   final String prefectId;
@@ -13,7 +13,6 @@ class PrefectDetailPage extends StatelessWidget {
     required this.prefectName,
   });
 
-
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -23,8 +22,7 @@ class PrefectDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prefectRef =
-    FirebaseFirestore.instance.collection('users').doc(prefectId);
+    final prefectRef = FirebaseFirestore.instance.collection('users').doc(prefectId);
 
     final blogStream = FirebaseFirestore.instance
         .collection('blogs')
@@ -33,18 +31,15 @@ class PrefectDetailPage extends StatelessWidget {
         .snapshots();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(prefectName),
-        backgroundColor: Colors.pink,
-      ),
+      appBar: AppBar(title: Text(prefectName), backgroundColor: Colors.pink),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: StreamBuilder<DocumentSnapshot>(
           stream: prefectRef.snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+            if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
+            if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
             final data = snapshot.data!.data() as Map<String, dynamic>;
 
             return Column(
@@ -64,11 +59,8 @@ class PrefectDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Center(
-                  child: Text(
-                    data['name'] ?? 'Unknown Prefect',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text(data['name'] ?? 'Unknown Prefect',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 const SizedBox(height: 8),
                 Text("Department: ${data['department'] ?? 'N/A'}"),
@@ -78,49 +70,45 @@ class PrefectDetailPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 10),
-                const Text("Blogs:",
-                    style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text("Blogs:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 StreamBuilder<QuerySnapshot>(
                   stream: blogStream,
                   builder: (context, blogSnap) {
-                    if (!blogSnap.hasData ||
-                        blogSnap.data!.docs.isEmpty) {
-                      return const Text("No blogs uploaded yet.");
-                    }
+                    if (blogSnap.hasError) return Center(child: Text('Error: ${blogSnap.error}'));
+                    if (!blogSnap.hasData) return const Center(child: CircularProgressIndicator());
 
-                    final blogs = blogSnap.data!.docs;
-                    return Column(
-                      children: blogs.map((doc) {
-                        final blog = doc.data() as Map<String, dynamic>;
-                        final assetUrl = blog['assetUrl'];
-                        final assetName = blog['assetName'] ?? 'Attached Asset';
+                    final blogs = blogSnap.data!.docs.map((doc) => BlogModel.fromFirestore(doc)).toList();
+                    if (blogs.isEmpty) return const Text("No blogs uploaded yet.");
 
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: blogs.length,
+                      itemBuilder: (context, index) {
+                        final blog = blogs[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
-                            title: Text(blog['title'] ?? 'Untitled'),
+                            title: Text(blog.title),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(blog['content'] ?? ''),
-
-                                if (assetUrl != null && assetUrl.isNotEmpty)
+                                Text(blog.content),
+                                if (blog.assetUrl != null && blog.assetUrl!.isNotEmpty)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: InkWell(
                                       onTap: () async {
                                         try {
-                                          await _launchUrl(assetUrl);
+                                          await _launchUrl(blog.assetUrl!);
                                         } catch (e) {
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text('Error opening link: $e')),
-                                          );
+                                              SnackBar(content: Text('Error opening link: $e')));
                                         }
                                       },
                                       child: Text(
-                                        'Asset: $assetName (Click to View)',
+                                        'Asset: ${blog.assetName ?? 'Attached Asset'} (Click to View)',
                                         style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
                                       ),
                                     ),
@@ -129,7 +117,7 @@ class PrefectDetailPage extends StatelessWidget {
                             ),
                           ),
                         );
-                      }).toList(),
+                      },
                     );
                   },
                 ),
